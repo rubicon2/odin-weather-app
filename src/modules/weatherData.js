@@ -31,8 +31,12 @@ function getLocationTime(weatherData) {
   });
 }
 
-function getDescription(weatherData) {
+function getWeatherType(weatherData) {
   return weatherData.weather[0].main;
+}
+
+function getDescription(weatherData) {
+  return weatherData.weather[0].description;
 }
 
 function getAvgTemp(weatherData) {
@@ -75,6 +79,7 @@ export {
   switchMeasurementUnits,
   getLocationName,
   getLocationTime,
+  getWeatherType,
   getDescription,
   getAvgTemp,
   getMinTemp,

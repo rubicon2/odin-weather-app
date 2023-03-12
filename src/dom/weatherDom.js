@@ -1,6 +1,11 @@
 import { subscribe } from '../modules/pubsub';
 import * as Weather from '../modules/weatherData';
 
+import sunImg from '../img/backgrounds/sunny.jpg';
+import cloudsImg from '../img/backgrounds/clouds.jpg';
+import rainImg from '../img/backgrounds/rain.jpg';
+import snowImg from '../img/backgrounds/snow.jpg';
+
 // Main DOM Elements
 let background = null;
 let backgroundSun = null;
@@ -10,10 +15,14 @@ let backgroundSnow = null;
 
 let overlay = null;
 let locationName = null;
+let locationTime = null;
 let weatherDescription = null;
 let avgTemp = null;
 let windSpeed = null;
 let humidity = null;
+
+let locationInput = null;
+let unitSelect = null;
 
 // Side DOM Elements
 let minTemp = null;
@@ -22,11 +31,28 @@ let maxTemp = null;
 subscribe('onWeatherDataResponse', refreshDom);
 subscribe('onWeatherDataError', showError);
 
-function showError() {}
+function showError(error) {
+  clearInfo();
+  locationName.innerText = 'Location not found';
+}
+
+function clearInfo() {
+  locationName.innerText = '';
+  locationTime.innerText = '';
+  weatherDescription.innerText = '';
+  avgTemp.innerText = '';
+  windSpeed.innerText = '';
+  humidity.innerText = '';
+  minTemp.innerText = '';
+  maxTemp.innerText = '';
+}
 
 // Updates information in existing elements
 function refreshDom(weatherData) {
+  switchBackground(weatherData);
+
   locationName.innerText = Weather.getLocationName(weatherData);
+  locationTime.innerText = Weather.getLocationTime(weatherData);
   weatherDescription.innerText = Weather.getDescription(weatherData);
 
   avgTemp.innerText = Weather.getAvgTemp(weatherData);
@@ -43,6 +69,8 @@ function createDomElements(parent) {
   background.classList.add('weatherInfo', 'background');
   parent.appendChild(background);
 
+  createSwitchingBackground(background);
+
   overlay = document.createElement('div');
   overlay.classList.add('weatherInfo', 'overlay');
   background.appendChild(overlay);
@@ -50,6 +78,10 @@ function createDomElements(parent) {
   locationName = document.createElement('div');
   locationName.classList.add('weatherInfo', 'locationName');
   overlay.appendChild(locationName);
+
+  locationTime = document.createElement('div');
+  locationTime.classList.add('weatherInfo', 'locationTime');
+  overlay.appendChild(locationTime);
 
   weatherDescription = document.createElement('div');
   weatherDescription.classList.add('weatherInfo', 'weatherDescription');
@@ -74,10 +106,72 @@ function createDomElements(parent) {
   maxTemp = document.createElement('div');
   maxTemp.classList.add('weatherInfo', 'maxTemp');
   overlay.appendChild(maxTemp);
+
+  unitSelect = createUnitSelect(overlay);
+
+  locationInput = document.createElement('input');
+  locationInput.type = 'text';
+  locationInput.value = 'Sapporo';
+  overlay.appendChild(locationInput);
+
+  let searchButton = document.createElement('button');
+  searchButton.classList.add('weatherInfo', 'searchButton');
+  searchButton.type = 'button';
+  searchButton.innerText = 'Go!';
+  overlay.appendChild(searchButton);
+
+  searchButton.addEventListener('click', () => {
+    Weather.getWeatherData(locationInput.value);
+  });
+}
+
+function createUnitSelect(parent) {
+  let units = document.createElement('div');
+  units.classList.add('weatherInfo', 'unitSelect');
+  units.innerText = 'Switch units';
+
+  units.addEventListener('click', Weather.switchMeasurementUnits);
+
+  parent.appendChild(units);
+  return units;
+}
+
+function switchBackground(weatherData) {
+  let weatherType = Weather.getWeatherType(weatherData).toLowerCase();
+  let allBackgrounds = document.querySelectorAll('.weatherInfo.background img');
+  allBackgrounds.forEach((e) => e.classList.remove('visible'));
+  switch (weatherType) {
+    case 'clouds':
+      backgroundClouds.classList.add('visible');
+      break;
+    case 'rain':
+      backgroundRain.classList.add('visible');
+      break;
+    case 'snow':
+      backgroundSnow.classList.add('visible');
+      break;
+    default:
+      backgroundSun.classList.add('visible');
+  }
 }
 
 function createSwitchingBackground(parent) {
   // Different images for each type of weather - sunny, cloudy, rainy, snowing
+  backgroundSun = document.createElement('img');
+  backgroundSun.src = sunImg;
+  parent.appendChild(backgroundSun);
+
+  backgroundClouds = document.createElement('img');
+  backgroundClouds.src = cloudsImg;
+  parent.appendChild(backgroundClouds);
+
+  backgroundRain = document.createElement('img');
+  backgroundRain.src = rainImg;
+  parent.appendChild(backgroundRain);
+
+  backgroundSnow = document.createElement('img');
+  backgroundSnow.src = snowImg;
+  parent.appendChild(backgroundSnow);
 }
 
 function fadeOut() {
