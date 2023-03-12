@@ -49,18 +49,18 @@ function clearInfo() {
 
 // Updates information in existing elements
 function refreshDom(weatherData) {
-  switchBackground(weatherData);
+  setBackground(weatherData);
 
   locationName.innerText = Weather.getLocationName(weatherData);
   locationTime.innerText = Weather.getLocationTime(weatherData);
   weatherDescription.innerText = Weather.getDescription(weatherData);
 
   avgTemp.innerText = Weather.getAvgTemp(weatherData);
-  minTemp.innerText = Weather.getMinTemp(weatherData);
-  maxTemp.innerText = Weather.getMaxTemp(weatherData);
+  minTemp.innerText = 'Min: ' + Weather.getMinTemp(weatherData);
+  maxTemp.innerText = 'Max: ' + Weather.getMaxTemp(weatherData);
 
-  windSpeed.innerText = Weather.getWindSpeed(weatherData);
-  humidity.innerText = Weather.getHumidity(weatherData);
+  windSpeed.innerText = 'Wind: ' + Weather.getWindSpeed(weatherData);
+  humidity.innerText = 'Humidity: ' + Weather.getHumidity(weatherData);
 }
 
 // Creates elements on page load
@@ -75,37 +75,45 @@ function createDomElements(parent) {
   overlay.classList.add('weatherInfo', 'overlay');
   background.appendChild(overlay);
 
+  let main = document.createElement('div');
+  main.classList.add('mainInfo');
+  overlay.append(main);
+
   locationName = document.createElement('div');
   locationName.classList.add('weatherInfo', 'locationName');
-  overlay.appendChild(locationName);
+  main.appendChild(locationName);
 
   locationTime = document.createElement('div');
   locationTime.classList.add('weatherInfo', 'locationTime');
-  overlay.appendChild(locationTime);
+  main.appendChild(locationTime);
 
   weatherDescription = document.createElement('div');
   weatherDescription.classList.add('weatherInfo', 'weatherDescription');
-  overlay.appendChild(weatherDescription);
+  main.appendChild(weatherDescription);
 
   avgTemp = document.createElement('div');
   avgTemp.classList.add('weatherInfo', 'avgTemp');
-  overlay.appendChild(avgTemp);
+  main.appendChild(avgTemp);
 
   windSpeed = document.createElement('div');
   windSpeed.classList.add('weatherInfo', 'windSpeed');
-  overlay.appendChild(windSpeed);
+  main.appendChild(windSpeed);
+
+  let sideInfo = document.createElement('div');
+  sideInfo.classList.add('sideInfo');
+  overlay.appendChild(sideInfo);
 
   humidity = document.createElement('div');
   humidity.classList.add('weatherInfo', 'humidity');
-  overlay.appendChild(humidity);
+  sideInfo.appendChild(humidity);
 
   minTemp = document.createElement('div');
   minTemp.classList.add('weatherInfo', 'minTemp');
-  overlay.appendChild(minTemp);
+  sideInfo.appendChild(minTemp);
 
   maxTemp = document.createElement('div');
   maxTemp.classList.add('weatherInfo', 'maxTemp');
-  overlay.appendChild(maxTemp);
+  sideInfo.appendChild(maxTemp);
 
   unitSelect = createUnitSelect(overlay);
 
@@ -136,22 +144,22 @@ function createUnitSelect(parent) {
   return units;
 }
 
-function switchBackground(weatherData) {
+function setBackground(weatherData) {
   let weatherType = Weather.getWeatherType(weatherData).toLowerCase();
   let allBackgrounds = document.querySelectorAll('.weatherInfo.background img');
-  allBackgrounds.forEach((e) => e.classList.remove('visible'));
+  allBackgrounds.forEach((e) => e.classList.add('invisible'));
   switch (weatherType) {
     case 'clouds':
-      backgroundClouds.classList.add('visible');
+      backgroundClouds.classList.remove('invisible');
       break;
     case 'rain':
-      backgroundRain.classList.add('visible');
+      backgroundRain.classList.remove('invisible');
       break;
     case 'snow':
-      backgroundSnow.classList.add('visible');
+      backgroundSnow.classList.remove('invisible');
       break;
     default:
-      backgroundSun.classList.add('visible');
+      backgroundSun.classList.remove('invisible');
   }
 }
 
@@ -159,18 +167,22 @@ function createSwitchingBackground(parent) {
   // Different images for each type of weather - sunny, cloudy, rainy, snowing
   backgroundSun = document.createElement('img');
   backgroundSun.src = sunImg;
+  backgroundSun.classList.add('invisible');
   parent.appendChild(backgroundSun);
 
   backgroundClouds = document.createElement('img');
   backgroundClouds.src = cloudsImg;
+  backgroundClouds.classList.add('invisible');
   parent.appendChild(backgroundClouds);
 
   backgroundRain = document.createElement('img');
   backgroundRain.src = rainImg;
+  backgroundRain.classList.add('invisible');
   parent.appendChild(backgroundRain);
 
   backgroundSnow = document.createElement('img');
   backgroundSnow.src = snowImg;
+  backgroundSnow.classList.add('invisible');
   parent.appendChild(backgroundSnow);
 }
 

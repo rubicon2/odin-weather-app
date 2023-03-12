@@ -5,4 +5,4 @@ import { createDomElements } from './dom/weatherDom';
 const body = document.querySelector('body');
 
 createDomElements(body);
-getWeatherData('Sapporo');
+getWeatherData('Alaska');

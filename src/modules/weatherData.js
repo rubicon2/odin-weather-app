@@ -1,7 +1,7 @@
 import { publish } from './pubsub';
 
 const apiKey = '0fac7d4b4e17c4f5be1a76d39bd58f27';
-// Can be metric or imperial. If set to anything else, api will give kelvins
+// Can be metric or imperial. If set to anything else, api will give standard units
 let locationName = 'London';
 let measurementUnits = 'metric';
 let temperatureUnit = 'C';

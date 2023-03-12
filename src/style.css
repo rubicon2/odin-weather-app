@@ -20,7 +20,20 @@ body {
   top: 0;
   left: 0;
 
+  width: 100%;
+
   padding: 2rem;
+
+  display: grid;
+  grid-template-columns: 1fr 25%;
+}
+
+.weatherInfo.overlay .mainInfo {
+
+}
+
+.weatherInfo.overlay .sideInfo {
+
 }
 
 .weatherInfo.background {
@@ -42,9 +55,8 @@ body {
   height: 100%;
 
   transition: opacity 1.5s ease-in-out;
-  opacity: 0;
 }
 
-.weatherInfo.background img.visible {
-  opacity: 1;
+.weatherInfo.background img.invisible {
+  opacity: 0;
 }
