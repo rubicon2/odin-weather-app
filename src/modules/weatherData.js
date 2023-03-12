@@ -4,14 +4,31 @@ const apiKey = '0fac7d4b4e17c4f5be1a76d39bd58f27';
 // Can be metric or imperial. If set to anything else, api will give kelvins
 let locationName = 'London';
 let measurementUnits = 'metric';
+let temperatureUnit = 'C';
+let speedUnit = 'metres per second';
 
-function setMeasurementUnits(units) {
-  measurementUnits = units;
-  getWeatherData(locationName, measurementUnits);
+function switchMeasurementUnits() {
+  measurementUnits = measurementUnits !== 'metric' ? 'metric' : 'imperial';
+  if (measurementUnits === 'imperial') {
+    temperatureUnit = 'F';
+    speedUnit = 'miles per hour';
+  } else if (measurementUnits === 'metric') {
+    temperatureUnit = 'C';
+    speedUnit = 'metres per second';
+  }
+  getWeatherData(locationName);
 }
 
 function getLocationName(weatherData) {
   return weatherData.name;
+}
+
+function getLocationTime(weatherData) {
+  let nowInMillis = new Date().getTime() + weatherData.timezone * 1000;
+  return new Date(nowInMillis).toLocaleTimeString('en-GB', {
+    hour: 'numeric',
+    minute: '2-digit',
+  });
 }
 
 function getDescription(weatherData) {
@@ -19,23 +36,23 @@ function getDescription(weatherData) {
 }
 
 function getAvgTemp(weatherData) {
-  return weatherData.main.temp;
+  return `${weatherData.main.temp}${temperatureUnit}`;
 }
 
 function getMinTemp(weatherData) {
-  return weatherData.main.temp_min;
+  return `${weatherData.main.temp_min}${temperatureUnit}`;
 }
 
 function getMaxTemp(weatherData) {
-  return weatherData.main.temp_max;
+  return `${weatherData.main.temp_max}${temperatureUnit}`;
 }
 
 function getWindSpeed(weatherData) {
-  return weatherData.wind.speed;
+  return `${weatherData.wind.speed} ${speedUnit}`;
 }
 
 function getHumidity(weatherData) {
-  return weatherData.main.humidity;
+  return `${weatherData.main.humidity}%`;
 }
 
 async function getWeatherData(location) {
@@ -55,8 +72,9 @@ async function getWeatherData(location) {
 }
 
 export {
-  setMeasurementUnits,
+  switchMeasurementUnits,
   getLocationName,
+  getLocationTime,
   getDescription,
   getAvgTemp,
   getMinTemp,
