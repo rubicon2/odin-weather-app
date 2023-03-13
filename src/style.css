@@ -15,7 +15,7 @@ body {
   background-color: black;
 }
 
-.weatherInfo.overlay {
+.overlay {
   position: absolute;
   top: 0;
   left: 0;
@@ -28,15 +28,15 @@ body {
   grid-template-columns: 1fr 25%;
 }
 
-.weatherInfo.overlay .mainInfo {
+.mainInfo {
 
 }
 
-.weatherInfo.overlay .sideInfo {
+.sideInfo {
 
 }
 
-.weatherInfo.background {
+.background {
   position: absolute;
   top: 0;
   left: 0;
@@ -46,7 +46,7 @@ body {
   overflow: hidden;
 }
 
-.weatherInfo.background img {
+.background img {
   position: absolute;
   top: 0;
   left: 0;
@@ -57,6 +57,6 @@ body {
   transition: opacity 1.5s ease-in-out;
 }
 
-.weatherInfo.background img.invisible {
+.invisible {
   opacity: 0;
 }
