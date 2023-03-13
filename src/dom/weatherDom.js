@@ -66,13 +66,13 @@ function refreshDom(weatherData) {
 // Creates elements on page load
 function createDomElements(parent) {
   background = document.createElement('div');
-  background.classList.add('weatherInfo', 'background');
+  background.classList.add('background');
   parent.appendChild(background);
 
   createSwitchingBackground(background);
 
   overlay = document.createElement('div');
-  overlay.classList.add('weatherInfo', 'overlay');
+  overlay.classList.add('overlay');
   background.appendChild(overlay);
 
   let main = document.createElement('div');
@@ -80,23 +80,23 @@ function createDomElements(parent) {
   overlay.append(main);
 
   locationName = document.createElement('div');
-  locationName.classList.add('weatherInfo', 'locationName');
+  locationName.classList.add('locationName');
   main.appendChild(locationName);
 
   locationTime = document.createElement('div');
-  locationTime.classList.add('weatherInfo', 'locationTime');
+  locationTime.classList.add('locationTime');
   main.appendChild(locationTime);
 
   weatherDescription = document.createElement('div');
-  weatherDescription.classList.add('weatherInfo', 'weatherDescription');
+  weatherDescription.classList.add('weatherDescription');
   main.appendChild(weatherDescription);
 
   avgTemp = document.createElement('div');
-  avgTemp.classList.add('weatherInfo', 'avgTemp');
+  avgTemp.classList.add('avgTemp');
   main.appendChild(avgTemp);
 
   windSpeed = document.createElement('div');
-  windSpeed.classList.add('weatherInfo', 'windSpeed');
+  windSpeed.classList.add('windSpeed');
   main.appendChild(windSpeed);
 
   let sideInfo = document.createElement('div');
@@ -104,15 +104,15 @@ function createDomElements(parent) {
   overlay.appendChild(sideInfo);
 
   humidity = document.createElement('div');
-  humidity.classList.add('weatherInfo', 'humidity');
+  humidity.classList.add('humidity');
   sideInfo.appendChild(humidity);
 
   minTemp = document.createElement('div');
-  minTemp.classList.add('weatherInfo', 'minTemp');
+  minTemp.classList.add('minTemp');
   sideInfo.appendChild(minTemp);
 
   maxTemp = document.createElement('div');
-  maxTemp.classList.add('weatherInfo', 'maxTemp');
+  maxTemp.classList.add('maxTemp');
   sideInfo.appendChild(maxTemp);
 
   unitSelect = createUnitSelect(overlay);
@@ -123,7 +123,7 @@ function createDomElements(parent) {
   overlay.appendChild(locationInput);
 
   let searchButton = document.createElement('button');
-  searchButton.classList.add('weatherInfo', 'searchButton');
+  searchButton.classList.add('searchButton');
   searchButton.type = 'button';
   searchButton.innerText = 'Go!';
   overlay.appendChild(searchButton);
@@ -135,7 +135,7 @@ function createDomElements(parent) {
 
 function createUnitSelect(parent) {
   let units = document.createElement('div');
-  units.classList.add('weatherInfo', 'unitSelect');
+  units.classList.add('unitSelect');
   units.innerText = 'Switch units';
 
   units.addEventListener('click', Weather.switchMeasurementUnits);
@@ -146,7 +146,7 @@ function createUnitSelect(parent) {
 
 function setBackground(weatherData) {
   let weatherType = Weather.getWeatherType(weatherData).toLowerCase();
-  let allBackgrounds = document.querySelectorAll('.weatherInfo.background img');
+  let allBackgrounds = document.querySelectorAll('.background img');
   allBackgrounds.forEach((e) => e.classList.add('invisible'));
   switch (weatherType) {
     case 'clouds':
