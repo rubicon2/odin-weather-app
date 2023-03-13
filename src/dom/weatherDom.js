@@ -129,7 +129,7 @@ function createDomElements(parent) {
   overlay.appendChild(searchButton);
 
   searchButton.addEventListener('click', () => {
-    Weather.getWeatherData(locationInput.value);
+    Weather.startPollingWeatherData(locationInput.value);
   });
 }
 

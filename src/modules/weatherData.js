@@ -1,6 +1,9 @@
 import { publish } from './pubsub';
 
 const apiKey = '0fac7d4b4e17c4f5be1a76d39bd58f27';
+// Every ten seconds
+const dataRefreshIntervalInMillis = 1000 * 10;
+let dataRefresh = null;
 // Can be metric or imperial. If set to anything else, api will give standard units
 let locationName = 'London';
 let measurementUnits = 'metric';
@@ -16,7 +19,7 @@ function switchMeasurementUnits() {
     temperatureUnit = 'C';
     speedUnit = 'metres per second';
   }
-  getWeatherData(locationName);
+  startPollingWeatherData(locationName);
 }
 
 function getLocationName(weatherData) {
@@ -59,8 +62,18 @@ function getHumidity(weatherData) {
   return `${weatherData.main.humidity}%`;
 }
 
-async function getWeatherData(location) {
+async function startPollingWeatherData(location) {
   locationName = location;
+  clearInterval(dataRefresh);
+  // Do initial data fetch
+  await getWeatherData(location);
+  // Now start polling min once a minute for updated info so time is always correct
+  dataRefresh = setInterval(() => {
+    getWeatherData(location);
+  }, dataRefreshIntervalInMillis);
+}
+
+async function getWeatherData(location) {
   try {
     publish('onWeatherDataFetch');
     const response = await fetch(
@@ -86,5 +99,6 @@ export {
   getMaxTemp,
   getWindSpeed,
   getHumidity,
+  startPollingWeatherData,
   getWeatherData,
 };
