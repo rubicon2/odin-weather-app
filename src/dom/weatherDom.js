@@ -6,6 +6,8 @@ import cloudsImg from '../img/backgrounds/clouds.jpg';
 import rainImg from '../img/backgrounds/rain.jpg';
 import snowImg from '../img/backgrounds/snow.jpg';
 
+// import searchIcon from
+
 // Main DOM Elements
 let background = null;
 let backgroundSun = null;
@@ -19,14 +21,9 @@ let locationTime = null;
 let weatherDescription = null;
 let avgTemp = null;
 let windSpeed = null;
-let humidity = null;
 
 let locationInput = null;
 let unitSelect = null;
-
-// Side DOM Elements
-let minTemp = null;
-let maxTemp = null;
 
 subscribe('onWeatherDataResponse', refreshDom);
 subscribe('onWeatherDataError', showError);
@@ -37,14 +34,7 @@ function showError(error) {
 }
 
 function clearInfo() {
-  locationName.innerText = '';
-  locationTime.innerText = '';
-  weatherDescription.innerText = '';
-  avgTemp.innerText = '';
-  windSpeed.innerText = '';
-  humidity.innerText = '';
-  minTemp.innerText = '';
-  maxTemp.innerText = '';
+  document.querySelectorAll('.weatherInfo').forEach((e) => (e.innerText = ''));
 }
 
 // Updates information in existing elements
@@ -56,81 +46,70 @@ function refreshDom(weatherData) {
   weatherDescription.innerText = Weather.getDescription(weatherData);
 
   avgTemp.innerText = Weather.getAvgTemp(weatherData);
-  minTemp.innerText = 'Min: ' + Weather.getMinTemp(weatherData);
-  maxTemp.innerText = 'Max: ' + Weather.getMaxTemp(weatherData);
 
   windSpeed.innerText = 'Wind: ' + Weather.getWindSpeed(weatherData);
-  humidity.innerText = 'Humidity: ' + Weather.getHumidity(weatherData);
 }
 
 // Creates elements on page load
 function createDomElements(parent) {
-  background = document.createElement('div');
-  background.classList.add('background');
-  parent.appendChild(background);
+  let searchBar = createSearchBar(parent);
+  let contentContainer = createElement(parent, 'div', '', ['contentContainer']);
 
-  createSwitchingBackground(background);
+  background = createSwitchingBackground(contentContainer);
 
-  overlay = document.createElement('div');
-  overlay.classList.add('overlay');
-  background.appendChild(overlay);
+  overlay = createElement(contentContainer, 'div', '', ['overlay']);
 
-  let main = document.createElement('div');
-  main.classList.add('mainInfo');
-  overlay.append(main);
+  let main = createElement(overlay, 'div', '', ['mainInfo']);
+  locationName = createElement(main, 'div', '', [
+    'weatherInfo',
+    'locationName',
+  ]);
+  locationTime = createElement(main, 'div', '', [
+    'weatherInfo',
+    'locationTime',
+  ]);
+  weatherDescription = createElement(main, 'div', '', [
+    'weatherInfo',
+    'weatherDescription',
+  ]);
+  avgTemp = createElement(main, 'div', '', ['weatherInfo', 'avgTemp']);
+  windSpeed = createElement(main, 'div', '', ['weatherInfo', 'windSpeed']);
+}
 
-  locationName = document.createElement('div');
-  locationName.classList.add('locationName');
-  main.appendChild(locationName);
+function createElement(parent, elementType, innerText, classList) {
+  let element = document.createElement(elementType);
+  classList.forEach((e) => element.classList.add(e));
+  element.innerText = innerText;
+  parent.appendChild(element);
+  return element;
+}
 
-  locationTime = document.createElement('div');
-  locationTime.classList.add('locationTime');
-  main.appendChild(locationTime);
+function createSearchBar(parent) {
+  let form = document.createElement('form');
+  parent.appendChild(form);
 
-  weatherDescription = document.createElement('div');
-  weatherDescription.classList.add('weatherDescription');
-  main.appendChild(weatherDescription);
+  let searchBar = createElement(form, 'div', '', ['searchBar']);
+  let locationSearchInputField = createElement(searchBar, 'input', '', [
+    'locationSearchInput',
+  ]);
+  locationSearchInputField.type = 'text';
+  searchBar.appendChild(locationSearchInputField);
 
-  avgTemp = document.createElement('div');
-  avgTemp.classList.add('avgTemp');
-  main.appendChild(avgTemp);
-
-  windSpeed = document.createElement('div');
-  windSpeed.classList.add('windSpeed');
-  main.appendChild(windSpeed);
-
-  let sideInfo = document.createElement('div');
-  sideInfo.classList.add('sideInfo');
-  overlay.appendChild(sideInfo);
-
-  humidity = document.createElement('div');
-  humidity.classList.add('humidity');
-  sideInfo.appendChild(humidity);
-
-  minTemp = document.createElement('div');
-  minTemp.classList.add('minTemp');
-  sideInfo.appendChild(minTemp);
-
-  maxTemp = document.createElement('div');
-  maxTemp.classList.add('maxTemp');
-  sideInfo.appendChild(maxTemp);
-
-  unitSelect = createUnitSelect(overlay);
-
-  locationInput = document.createElement('input');
-  locationInput.type = 'text';
-  locationInput.value = 'Sapporo';
-  overlay.appendChild(locationInput);
-
-  let searchButton = document.createElement('button');
-  searchButton.classList.add('searchButton');
-  searchButton.type = 'button';
-  searchButton.innerText = 'Go!';
-  overlay.appendChild(searchButton);
-
-  searchButton.addEventListener('click', () => {
-    Weather.startPollingWeatherData(locationInput.value);
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    Weather.startPollingWeatherData(locationSearchInputField.value);
   });
+
+  // let searchIcon =
+
+  // How to get the info yo, when you finish making the search bar!
+  // searchButton.addEventListener('click', () => {
+  //   Weather.startPollingWeatherData(locationInput.value);
+  // });
+
+  // Also put the unit select in here?
+
+  return searchBar;
 }
 
 function createUnitSelect(parent) {
@@ -146,7 +125,7 @@ function createUnitSelect(parent) {
 
 function setBackground(weatherData) {
   let weatherType = Weather.getWeatherType(weatherData).toLowerCase();
-  let allBackgrounds = document.querySelectorAll('.background img');
+  let allBackgrounds = document.querySelectorAll('.backgroundContainer img');
   allBackgrounds.forEach((e) => e.classList.add('invisible'));
   switch (weatherType) {
     case 'clouds':
@@ -164,26 +143,31 @@ function setBackground(weatherData) {
 }
 
 function createSwitchingBackground(parent) {
+  let backgroundContainer = createElement(parent, 'div', '', [
+    'backgroundContainer',
+  ]);
   // Different images for each type of weather - sunny, cloudy, rainy, snowing
   backgroundSun = document.createElement('img');
   backgroundSun.src = sunImg;
   backgroundSun.classList.add('invisible');
-  parent.appendChild(backgroundSun);
+  backgroundContainer.appendChild(backgroundSun);
 
   backgroundClouds = document.createElement('img');
   backgroundClouds.src = cloudsImg;
   backgroundClouds.classList.add('invisible');
-  parent.appendChild(backgroundClouds);
+  backgroundContainer.appendChild(backgroundClouds);
 
   backgroundRain = document.createElement('img');
   backgroundRain.src = rainImg;
   backgroundRain.classList.add('invisible');
-  parent.appendChild(backgroundRain);
+  backgroundContainer.appendChild(backgroundRain);
 
   backgroundSnow = document.createElement('img');
   backgroundSnow.src = snowImg;
   backgroundSnow.classList.add('invisible');
-  parent.appendChild(backgroundSnow);
+  backgroundContainer.appendChild(backgroundSnow);
+
+  return backgroundContainer;
 }
 
 function fadeOut() {
