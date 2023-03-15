@@ -23,25 +23,43 @@ body {
   color: aliceblue;
 }
 
-.locationSearchInput {
+.searchInputBackground {
+  background-color: lightgrey;
+  border-radius: 50px;
+
+  display: grid;
+  grid-template-columns: 1fr min-content min-content;
+  align-items: center;
+
   width: 30%;
+  height: 100%;
+
+  padding: 0.1rem 0.5rem;
+}
+
+.locationSearchInput {
   background-color: lightgrey;
 
   outline: none;
   border: none;
-  border-radius: 25px;
+  border-radius: 50px 0 0 50px;
 
   font-size: 0.6rem;
 
   padding: 0.5rem;
+
+  margin-right: auto;
 }
 
-.locationSearchInputIcon {
-
+.locationSearchInputIcon,
+.unitChangeIcon {
+  cursor: pointer;
 }
 
 .mainInfo {
-
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
 }
 
 .sideInfo {
@@ -71,6 +89,7 @@ body {
 .overlay {
   position: absolute;
   padding: 1.5rem;
+  width: 100%;
 }
 
 .invisible {

@@ -6,7 +6,8 @@ import cloudsImg from '../img/backgrounds/clouds.jpg';
 import rainImg from '../img/backgrounds/rain.jpg';
 import snowImg from '../img/backgrounds/snow.jpg';
 
-// import searchIcon from
+import searchIconSrc from '../img/icons/search.svg';
+import temperatureIconSrc from '../img/icons/thermometer.svg';
 
 // Main DOM Elements
 let background = null;
@@ -21,9 +22,6 @@ let locationTime = null;
 let weatherDescription = null;
 let avgTemp = null;
 let windSpeed = null;
-
-let locationInput = null;
-let unitSelect = null;
 
 subscribe('onWeatherDataResponse', refreshDom);
 subscribe('onWeatherDataError', showError);
@@ -52,7 +50,7 @@ function refreshDom(weatherData) {
 
 // Creates elements on page load
 function createDomElements(parent) {
-  let searchBar = createSearchBar(parent);
+  createSearchBar(parent);
   let contentContainer = createElement(parent, 'div', '', ['contentContainer']);
 
   background = createSwitchingBackground(contentContainer);
@@ -89,38 +87,42 @@ function createSearchBar(parent) {
   parent.appendChild(form);
 
   let searchBar = createElement(form, 'div', '', ['searchBar']);
-  let locationSearchInputField = createElement(searchBar, 'input', '', [
-    'locationSearchInput',
-  ]);
-  locationSearchInputField.type = 'text';
-  searchBar.appendChild(locationSearchInputField);
 
-  form.addEventListener('submit', (e) => {
+  let searchInputBackground = createElement(searchBar, 'div', '', [
+    'searchInputBackground',
+  ]);
+
+  let locationSearchInputField = createElement(
+    searchInputBackground,
+    'input',
+    '',
+    ['locationSearchInput']
+  );
+  locationSearchInputField.type = 'text';
+  locationSearchInputField.placeholder = 'Search for a location...';
+
+  form.addEventListener('submit', search);
+
+  let unitsIcon = document.createElement('img');
+  unitsIcon.classList.add('unitChangeIcon');
+  unitsIcon.src = temperatureIconSrc;
+  searchInputBackground.appendChild(unitsIcon);
+
+  unitsIcon.addEventListener('click', Weather.switchMeasurementUnits);
+
+  let searchIcon = document.createElement('img');
+  searchIcon.classList.add('locationSearchInputIcon');
+  searchIcon.src = searchIconSrc;
+  searchInputBackground.appendChild(searchIcon);
+
+  searchIcon.addEventListener('click', search);
+
+  function search(e) {
     e.preventDefault();
     Weather.startPollingWeatherData(locationSearchInputField.value);
-  });
-
-  // let searchIcon =
-
-  // How to get the info yo, when you finish making the search bar!
-  // searchButton.addEventListener('click', () => {
-  //   Weather.startPollingWeatherData(locationInput.value);
-  // });
-
-  // Also put the unit select in here?
+  }
 
   return searchBar;
-}
-
-function createUnitSelect(parent) {
-  let units = document.createElement('div');
-  units.classList.add('unitSelect');
-  units.innerText = 'Switch units';
-
-  units.addEventListener('click', Weather.switchMeasurementUnits);
-
-  parent.appendChild(units);
-  return units;
 }
 
 function setBackground(weatherData) {
